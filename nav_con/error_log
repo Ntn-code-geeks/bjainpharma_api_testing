@@ -1,0 +1,15 @@
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 46
+[16-Aug-2018 11:44:54 UTC] PHP Warning:  Creating default object from empty value in /home/inhouse/public_html/bjainpharma/nav_con/my_customer.php on line 47
+[17-Aug-2018 04:33:01 UTC] PHP Warning:  curl_setopt(): You must pass either an object or an array with the CURLOPT_HTTPHEADER argument in /home/inhouse/public_html/bjainpharma/nav_con/php_nav_lib/Navision.php on line 35

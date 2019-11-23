@@ -21,13 +21,13 @@ class Pharmacy extends Parent_admin_controller {
 //         $this->load->model('doctor/Doctor_model','doctor');
 			$this->load->model('pharmacy/pharmacy_model','pharmacy');
 			$this->load->model('dealer/Dealer_model','dealer');
-			$this->load->model('doctor/Doctor_model','doctor');
+			 $this->load->model('doctor/Doctor_model','doctor');
 			$this->load->model('permission/permission_model','permission'); 
 			$this->load->model('users/User_model','user');
     }
     
     public function index($date='',$city=''){
-    	$city1=urisafedecode($city);
+        $city1=urisafedecode($city);
 		$data['date_interact']='';
 		if(!is_numeric($date))
 		{
@@ -59,8 +59,7 @@ class Pharmacy extends Parent_admin_controller {
 			$per_page='';
 			$data['pharma_data'] = $this->pharmacy->pharmacymaster_info($per_page, $page);
 		}
-
-       $this->load->get_view('pharmacy_list/pharmacy_details_view',$data);
+       $this->load->get_view('pharmacy_list/pharmacy_details_view',$data);  
         
     }
     
@@ -307,7 +306,8 @@ class Pharmacy extends Parent_admin_controller {
         }
         
     }
-
+    
+    
       // four level inferior view pharmacy
     public function child4(){$data['date_interact']='';
 		$data['action'] = 'global_search/pharma_search';  
@@ -459,7 +459,7 @@ class Pharmacy extends Parent_admin_controller {
     public function save_pharmacy($id=''){
         
       $post_data = $this->input->post();
-           //pr(json_encode($post_data)); die;
+           pr(json_encode($post_data)); die;
             $this->load->library('form_validation');
             $this->form_validation->set_rules('city_pin', 'Code Pincode', 'required');
             $this->form_validation->set_rules('com_state', 'Company State', 'required');
@@ -578,6 +578,7 @@ class Pharmacy extends Parent_admin_controller {
     
     
     // pharmacy view for interaction
+    
     public function view_pharmacy_for_interaction($id=''){
         
         if($id!=''){

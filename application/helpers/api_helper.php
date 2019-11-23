@@ -87,20 +87,20 @@
 	
 	
 	/* get user pharma id*/
-	function get_pharma_id($id) {  // for user id
-	  $ci = &get_instance();
-	  $col='pharma_id';
-	  $ci->db->select($col); 
-	  $ci->db->from('pharmacy_list'); 
-	  $ci->db->where('cromp',$id);
-	  $query= $ci->db->get(); 
-	  if($ci->db->affected_rows()){
-	    return  $query->row()->pharma_id; 
-	  } 
-	  else{
-	    return '';
-	  }
-	}
+//	function get_pharma_id($id) {  // for user id
+//	  $ci = &get_instance();
+//	  $col='pharma_id';
+//	  $ci->db->select($col);
+//	  $ci->db->from('pharmacy_list');
+//	  $ci->db->where('cromp',$id);
+//	  $query= $ci->db->get();
+//	  if($ci->db->affected_rows()){
+//	    return  $query->row()->pharma_id;
+//	  }
+//	  else{
+//	    return '';
+//	  }
+//	}
 	
 	/* get user pharma id*/
 	function get_doctor_id($id) {  // for user id
@@ -185,7 +185,7 @@
 		$query= $ci->db->get(); 
 		if($ci->db->affected_rows())
 		{
-			return $query->row(); 
+			return $query->result_array();
 		} 
 		else
 		{
@@ -620,6 +620,26 @@
 		return FALSE;
 	}
 
+}
+
+
+function get_leaves_inmonth($userid,$fromdate,$todate)
+{
+	$ci = &get_instance();
+	$col='remark,user_id,from_date,to_date';
+	$con='find_in_set('.$userid.',ul.user_id) and (ul.from_date >="'.$fromdate.'" and ul.to_date<="'.$todate.'")';
+	$ci->db->select($col);
+	$ci->db->from('user_leave ul');
+	$ci->db->where($con);
+	$query= $ci->db->get();
+	if($ci->db->affected_rows())
+	{
+		return $query->result_array();
+	}
+	else
+	{
+		return array();
+	}
 }
 
 ?>

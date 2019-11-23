@@ -1611,8 +1611,8 @@ function email_setting(){
 		'smtp_user'=>'info@bjain.com',
 		'smtp_pass'=>'happy@365',
 		'charset'=>'utf-8',
-        'smtp_port'=>25, // use 3535 for server, 25 and localhost
-//		'smtp_port'=>465, // use 3535 for server, 25 and localhost
+//        'smtp_port'=>25, // use 3535 for server, 25 and localhost
+		'smtp_port'=>465, // use 3535 for server, 25 and localhost
 		'sendmail_path'=>'', ///usr/sbin/sendmail
 		'smtp_crypto'=>'none', //tls or ssl
 		'mailtype'=>'html',

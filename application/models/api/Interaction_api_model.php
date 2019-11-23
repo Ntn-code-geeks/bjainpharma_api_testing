@@ -936,265 +936,70 @@ class Interaction_api_model extends CI_Model {
 
 /* End Dealer Inteaction Save */
     
-    public function insert_ta_da($data){
-        //SELECT * FROM `pharma_interaction_doctor` WHERE create_date='2018-05-22' and crm_user_id=92 order by last_update DESC
-       $previous=date('Y-m-d', strtotime('-1 day', strtotime($data->dateOfInteraction)));
-       $interaction_day=date('D', strtotime($data->dateOfInteraction));
-       $user_id=$data->user_id;
-       $designation_id=get_user_deatils($user_id)->user_designation_id;
-       $location_type=0;
-       $internet_charge=10;
-       $distance=1;
-       $stp_distance=1;
-       $source_city=get_interaction_source_api($user_id);//one date before from interaction
-       $source_city_id=get_interaction_source_id_api($user_id);//one date before from interaction
-       $destination_city=0;
-       $destination_city_id=0;
-       $ta=0;
-       $stp_ta=0;
-       $da=0;
-       $rs_per_km=0;//get using distance
-       $meet_id=$data->drId;
-       if(!is_numeric($data->drId))
-       {
-            if(substr($data->drId,0,3)=='doc'){
-                //doctor
-                $destination_city=get_destination_interaction('doctor_list',$data->drId,1);
-                $destination_city_id=get_destination_interaction_id('doctor_list',$data->drId,1);
-            }
-            else{
-               //pharma 
-                $destination_city=get_destination_interaction('pharmacy_list',$data->drId,2);
-                $destination_city_id=get_destination_interaction_id('pharmacy_list',$data->drId,2);
-            }
-        }
-        else{
-           //dealer 
-            $destination_city=get_destination_interaction('dealer',$data->drId,3);
-            $destination_city_id=get_destination_interaction_id('dealer',$data->drId,3);
-        }
-        if($data->backHo && $destination_city==$source_city && $destination_city!=get_user_deatils($user_id)->headquarters_city)
-        {
 
-          $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=".$source_city."&destinations=".get_user_deatils($user_id)->hq_city_pincode;
-          if($source_city_id==get_user_deatils($user_id)->headquarters_city)
-          {
-            $stp_distance=1;
-          }
-          else
-          {
-            $cityData=$this->check_city_path($source_city_id,get_user_deatils($user_id)->headquarters_city);
-            if($cityData)
-            {
-              $stp_distance=$cityData->distance;
-            }
-          }
-        }
-        else
-        {
-          $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=".$source_city."&destinations=".$destination_city;
-          if($source_city_id==$destination_city_id)
-          {
-            $stp_distance=1;
-          }
-          else
-          {
-            $cityData=$this->check_city_path($source_city_id,$destination_city_id);
-            if($cityData)
-            {
-              $stp_distance=$cityData->distance;
-            }
-          }
-          
-        }
-       /* echo $url;
-        die;*/
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $response_a = json_decode($response);
-        $status = $response_a->status;
-        //die;
-        if ($status == 'OK' && $response_a->rows[0]->elements[0]->status == 'OK')
-        {
-           $distance=explode(' ',$response_a->rows[0]->elements[0]->distance->text)[0];
-        }
-        else
-        {
-            $distance=1;
-        }
-        if($distance>=0 && $distance<=100)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(5);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(1);
-            }
-        }
-        elseif($distance>=101 && $distance<=300)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(6);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(2);
-            }
-        }
-        elseif($distance>=301 && $distance<=500)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(7);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(3);
-            }
-        }
-        else
-        {
-            $rs_per_km=get_km_expanse(4);
-        }
-        if( $rs_per_km==0)
-        {
-            $ta=0;
-        }
-        else
-        {
-            if($data->backHo)
-            {
-                if($destination_city==$source_city && $destination_city!=get_user_deatils($user_id)->headquarters_city)
-                {
-                    $ta=$rs_per_km*$distance;
-                }
-                else
-                {
-                    $ta=$rs_per_km*$distance*2;
-                }
-            }
-            else
-            {
-                $ta=$rs_per_km*$distance;
-            }
-        }
-        if($data->backHo)
-        {
-            if($destination_city==$source_city && $destination_city!=get_user_deatils($user_id)->headquarters_city)
-            {
-                $distance=$distance;
-            }
-            else
-            {
-                $distance=$distance*2;
-            }
-        }
 
-        if($stp_distance>=0 && $stp_distance<=100)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(5);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(1);
-            }
-        }
-        elseif($stp_distance>=101 && $stp_distance<=300)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(6);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(2);
-            }
-        }
-        elseif($stp_distance>=301 && $stp_distance<=500)
-        {
-            if($designation_id==5 || $designation_id==6)
-            {
-                $rs_per_km=get_km_expanse(7);
-            }
-            else
-            {
-                $rs_per_km=get_km_expanse(3);
-            }
-        }
-        else
-        {
-            $rs_per_km=get_km_expanse(4);
-        }
-        if( $rs_per_km==0)
-        {
-            $stp_ta=0;
-        }
-        else
-        {
-            if($data->backHo)
-            {
-                if($destination_city==$source_city && $destination_city!=get_user_deatils($user_id)->headquarters_city)
-                {
-                    $stp_ta=$rs_per_km*$stp_distance;
-                }
-                else
-                {
-                    $stp_ta=$rs_per_km*$stp_distance*2;
-                }
-            }
-            else
-            {
-                $stp_ta=$rs_per_km*$stp_distance;
-            }
-        }
-        if($data->backHo)
-        {
-            if($destination_city==$source_city && $destination_city!=get_user_deatils($user_id)->headquarters_city)
-            {
-                $stp_distance=$stp_distance;
-            }
-            else
-            {
-                $stp_distance=$stp_distance*2;
-            }
-        }
 
-        $tour_date = date('Y-m-d', strtotime($data->dateOfInteraction));
-        $tour_data = array(
-            'user_id'=>$user_id,
-            'designation_id'=>$designation_id,
-            'internet_charge'=>10,
-            'distance'=>$distance,
-            'source_city'=>$source_city_id,
-            'destination_city'=>$destination_city_id,
-            'source_city_pin'=>$source_city,
-            'destination_city_pin'=>$destination_city,
-            'rs_per_km'=>$rs_per_km,
-            'is_stay'=>$data->stay,
-            'up_down'=>$data->backHo,
-            'ta'=>$ta,
-            'stp_ta'=>$stp_ta,
-            'stp_distance'=>$stp_distance,
-            'meet_id'=>$meet_id,
-            'doi'=>$tour_date,
-            'created_date'=>savedate(),
-            'updated_date'=>savedate(),
-            'status'=>1, 
-        );
-        $this->db->insert('ta_da_report',$tour_data); 
-    }
+    /*Nitin kumar
+    	!!.Code starts here.!!
+    */
 
-        
+    public function interaction_log_details($data){
+
+		$this->db->where('crm_user_id',$data->user_id);
+		$this->db->where('person_id',$data->dealer_view_id);
+		$this->db->delete('log_interaction_data');
+		$col='order_id';
+		$this->db->select($col);
+		$this->db->from('interaction_order');
+		$this->db->where('interaction_id',0);
+		$this->db->where('crm_user_id',$data->user_id);
+		$this->db->where('interaction_person_id',$data->dealer_view_id);
+		$query= $this->db->get();
+		if($this->db->affected_rows()){
+			$id= $query->row()->order_id;
+			$this->db->where('order_id', $id);
+			$this->db->delete('order_details');
+			$this->db->where('interaction_id',0);
+			$this->db->where('crm_user_id',$data->user_id);
+			$this->db->where('interaction_person_id',$data->dealer_view_id);
+			$this->db->delete('interaction_order');
+		}
+
+		$telephonic=0;
+		$team_member='';
+		$m_sample='';
+		if(isset($data->telephonic)){
+			$telephonic=$data->telephonic;
+		}
+		if(isset($data->team_member)){
+//			$team_member=implode($data['team_member'],',');
+			$team_member=$data->team_member;
+		}
+		if(isset($data->m_sample)){
+			//$m_sample=implode($data['m_sample'],',');
+			$m_sample=$data->m_sample;
+		}
+
+		$log_data = array(
+			'person_id'=>$data->dealer_view_id,
+			'followup_date'=>$data->fup_a,
+			'interaction_date'=>$data->doi_doc,
+			'stay'=>$data->stay,
+			'telephonic'=>$telephonic,
+			'joint_working '=>$team_member,
+//			'path_info '=>$data->path_info,
+			'path_info '=>1,
+			'city_code '=>$data->city,
+			'sample '=>$m_sample,
+			'remark'=>$data->remark,
+			'crm_user_id'=> $data->user_id,
+		);
+		$this->db->insert('log_interaction_data',$log_data);
+		return ($this->db->affected_rows() == 1) ? true : false;
+	}
+
+
+
+
 }
 

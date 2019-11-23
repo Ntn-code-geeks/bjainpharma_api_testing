@@ -29,7 +29,6 @@ class Doctor extends Parent_admin_controller {
     }
     
     public function index($date='',$city=''){
-
 		$city1=urisafedecode($city);
 		$data['date_interact']='';
 		if(!is_numeric($date))
@@ -40,17 +39,17 @@ class Doctor extends Parent_admin_controller {
 			  $data['date_interact']=$date1;
 			}
 		}
-                
-//        $data['dealer_list']= $this->dealer->dealer_list(); 
-////         pr($data['dealer_list']); die;
-//        
-//        $data['users_team'] = $this->permission->user_team(); // show child and boss users
-//         
-//        $data['pharma_list']= $this->permission->pharmacy_list(logged_user_cities()); 
-//		//echo logged_user_cities();
-//        //pr(sizeof($data['pharma_list'])); die;
-//        $data['meeting_sample'] = $this->doctor->meeting_sample_master();
-             
+        $data['dealer_list']= $this->dealer->dealer_list(); 
+//         pr($data['dealer_list']); die;
+        
+        $data['users_team'] = $this->permission->user_team(); // show child and boss users
+         
+        $data['pharma_list']= $this->permission->pharmacy_list(logged_user_cities()); 
+		//echo logged_user_cities();
+        //pr(sizeof($data['pharma_list'])); die;
+        $data['meeting_sample'] = $this->doctor->meeting_sample_master();
+        
+                 
        // $total_record = $this->doctor->totaldata();
 		
         $data['title'] = "Doctor Info";
@@ -58,7 +57,6 @@ class Doctor extends Parent_admin_controller {
 
 		if($city!='')
 		{
-
 			$datablank='';
 			$page='';
 			$per_page='';
@@ -75,121 +73,18 @@ class Doctor extends Parent_admin_controller {
 
     //$data['doctor_data'] = $this->doctor->doctormaster_info($config["per_page"], $page);
        $data['action'] = 'global_search/doc_search';  
-//       pr($data['doctor_data']); die;
+       
        $this->load->get_view('doctor_list/doctor_details_view',$data);        
         
     }
     
-	/*
-         * Developer: Shailesh Saraswat
-         * Email:sss.shailesh@gmail.com
-         * Dated: 27-DEC-2018
-         * 
-         * Get faster doctor details
-         * 
-         */
-    public function doctor_master_details(){
-
-           
-        $data['searchin'] = empty($this->input->post('search')['value'])?1:$this->input->post('search')['value'];        
-//    pr($data); die;
-            $columns = array( 
-                            
-                            0 => 'doc_name',
-                            1 => 'doc_email',
-                            2 => 'doc_phone',
-                            3 => 'c.city_name',
-                            4 => 'c.city_name',
-                            
-                           );
-
-	$limit = $this->input->post('length');
-        $start = $this->input->post('start');
-        $order = $columns[$this->input->post('order')[0]['column']];
-        //echo $start.'<br> last'; echo $limit; die;
-        $dir = $this->input->post('order')[0]['dir'];
-        
-        $filter = array(  'searchin'=>$data['searchin'],
-                          'limit'=>$limit,
-                          'start'=>$start,
-                          'order'=>$order,
-                          'dir'=>$dir
-                         );
-
-        $totalData  = $this->doctor->doctormaster_totaldata($filter);
-         if($filter['searchin']!=1){ 
-                                              $totalFiltered = $this->doctor->doctormaster_filter_totaldata($filter,$data['userCall'],$pastTime, $data['calledNumber'],$date_end);
-                                             
-                                  }else{   
-                                                $totalFiltered = $totalData; 
-                                     }
-           $doctor_master =   $this->doctor->doctormaster($filter);
-//        pr($doctor_master); die;
-            $posts = $doctor_master;
-
-            $basePath = base_url();
-        $data = array();
-        if(!empty($posts))
-        {
-            foreach ($posts as $k=>$post)
-            {
-
-                $nestedData['Name'] = $post['d_name'];
-                $nestedData['Email'] = $post['d_email'];
-                $nestedData['Phone Number'] = $post['d_ph'];
-               
-                $nestedData['City'] = $post['city_name'];
-                
-                
-                $nestedData['City Pincode'] = $post['city_pincode'];
-              
-                
-                
-                $nestedData['Action'] ="<a href=".$basePath."doctors/doctor/edit_doctor/".urisafeencode($post['id'])."><button type='button' class='btn btn-info'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>"
-                        . "| <a href=".$basePath."doctors/doctor/view_doctor_for_interaction/". urisafeencode($post['id'])."><button type='button' class='btn btn-info'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
-//                        . "| <a href=".$basePath."doctors/doctor/doctor_interaction_sales/".urisafeencode($post['id'])."><button type='button' class='btn btn-info'>Interaction</button></a>";
-
-        if(is_admin()){
-              $warning_check = "return confirm('Are you sure want to In-Active this Doctor.')";
-            if($post['status']==1){
-
-             $nestedData['Action'] .= "| <a href=".$basePath."doctors/doctor/inactive_doctor/".urisafeencode($post['id'])." onclick='.$warning_check.' class=''><button type='button' class='btn btn-success'>Active</button></a>";
-            }elseif($post['status']==0){
-               $nestedData['Action'] .= " | <a href=".$basePath."doctors/doctor/active_doctor/".urisafeencode($post['id'])." onclick=".$warning_check." class=''><button type='button' class='btn btn-warning'>In-Active</button></a>";
-            }
-            if($post['blocked']==1){
-                 $nestedData['Action'] .="| <a href=".$basePath."doctors/doctor/remain_doctor/".urisafeencode($post['id'])." onclick=".$warning_check." class=''><button type='button' class='btn btn-danger'>Blocked</button></a>";
-            }elseif($post['blocked']==0){
-                $nestedData['Action'] .="| <a href=".$basePath."doctors/doctor/blocked_doctor/".urisafeencode($post['id'])." onclick=".$warning_check." class=''><button type='button' class='btn btn-success'>UnBlocked</button></a>";
-            }
-
-        }
-//               $nestedData['Action'] =$basePath;
-
-                $data[] = $nestedData;
-
-            }
-        }
-        
-        
-        $json_data = array(
-                    "draw"            => intval($this->input->post('draw')),  
-                    "recordsTotal"    => intval($totalData),  
-                    "recordsFiltered" => intval($totalFiltered), 
-                    "data"            => $data   
-                    );
-            
-        echo json_encode($json_data);  die;
-           
-        
-            
-        }
-
-
-        public function doctor_interaction_sales($docid='',$date='',$path='',$city=''){
+	
+	
+	
+	 public function doctor_interaction_sales($docid='',$date='',$path='',$city=''){
 		 
-		$data['date_interact'] = '';
-		$data['order_amount'] = '';
+		$data['date_interact']='';
+		$data['order_amount']='';
 		$doi=urisafedecode($date);
 		$data['city']='';
 		$docid=urisafedecode($docid);
@@ -206,9 +101,8 @@ class Doctor extends Parent_admin_controller {
 		{
 			$data['path_info']=1;
 		}
-		$data['old_data'] = '';
-        $data['dealer_list'] = $this->dealer->dealer_list();
-                
+		$data['old_data']='';
+        $data['dealer_list']= $this->dealer->dealer_list(); 
 		if($this->doctor->get_log__doctor_data($docid))
 		{
 			$data['old_data']= $this->doctor->get_log__doctor_data($docid); 
@@ -589,12 +483,12 @@ class Doctor extends Parent_admin_controller {
 
     public function add_list(){
         
-         $data['title']="Add Doctor";
+        $data['title']="Add Doctor";
          $data['page_name'] = "Doctor Master";
-         $data['action'] = "doctors/doctor/save_doctor";
-         $data['dealer_list']= $this->dealer->add_edit_dealer_list();
-         $data['pharma_list']= $this->permission->pharmacy_list(logged_user_cities());
-         $data['statename'] = $this->dealer->state_list();
+          $data['action'] = "doctors/doctor/save_doctor";
+           $data['dealer_list']= $this->dealer->add_edit_dealer_list();
+            $data['pharma_list']= $this->permission->pharmacy_list(logged_user_cities()); 
+            $data['statename'] = $this->dealer->state_list();
             
             $data['doc_status_info']=$this->doctor->doc_status(); // status of the doctor (Prescribe/dispense)
             
@@ -606,15 +500,15 @@ class Doctor extends Parent_admin_controller {
     }
     
     public function save_doctor($id=''){
-//        pr(($this->input->post()));
-//        die;
+        /*pr(json_encode($this->input->post()));
+        die;*/
           $this->load->library('form_validation');
 
          $this->form_validation->set_rules('city_pin', 'Code Pincode', 'required');
          $this->form_validation->set_rules('doctor_state', 'Doctor State', 'required');
          $this->form_validation->set_rules('doctor_city', 'Doctor City', 'required');
 //           $this->form_validation->set_rules('doctor_num', 'Phone', 'required');
-       if(empty($id)){
+         if(empty($id)){
         $this->form_validation->set_rules('doctor_num', 'Phone', 'required|is_unique[doctor_list.doc_phone]');
        }
        elseif(!empty($id)){
@@ -978,7 +872,6 @@ class Doctor extends Parent_admin_controller {
 			}
 			$data['title']="Import Doctor";
 			$data['page_name'] = "Import Doctor";
-			$data['last_inserted']=$this->doctor->doc_last_id();
 			$data['action'] = "doctors/doctor/save_bulk_doctor";
 			$this->load->get_view('doctor_list/doctor_import_view',$data);
 		}
@@ -992,8 +885,8 @@ class Doctor extends Parent_admin_controller {
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('user', 'User', 'required');
 		if($this->form_validation->run() == FALSE){
-			return $this->import_doctor();
-
+			return $this->import_doctor();    
+		
 		}
 		else{
 			$mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
@@ -1019,8 +912,6 @@ class Doctor extends Parent_admin_controller {
 						  'city_id' => $importdata[3],
 						  'state_id' => $importdata[4],
 						  'doc_gender' => $importdata[1],
-						  'city_pincode'=>$importdata[7],
-						  'sp_code'=>$importdata[8],
 						  'crm_user_id' => $this->input->post('user'),
 						  'last_update' => savedate(),
 						  'doc_status' =>1,
@@ -1037,7 +928,7 @@ class Doctor extends Parent_admin_controller {
 					set_flash('<div class="alert alert-success alert-dismissible">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 					<h4><i class="icon fa fa-check"></i> Success!</h4>
-					 Doctor are imported successfully.  Not Added Total '.$count.'</div>');
+					Doctor are imported successfully.'.$count.' Duplicate Mobile Found. </div>'); 
 					redirect('doctors/doctor/import_doctor');
 				}else{
 					set_flash('<div class="alert alert-danger alert-dismissible">

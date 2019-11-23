@@ -68,7 +68,7 @@ class Interaction extends REST_Controller {
 	   	$msg = 'Please Enter City Pincode of doctor';
 	}
 
-       	if ($msg == '')
+       	if ($msg == '') 
         {
         	/*$dealers=$interaction_data->drId;
 		$dealer_ids= explode(',',$dealers);
@@ -81,13 +81,13 @@ class Interaction extends REST_Controller {
 			}
 		}*/
 	        $data = $this->interact->save_doctor_interaction($interaction_data);
-		if ($data!=FALSE)
+		if ($data!=FALSE) 
 		{
-
+			 
 		    $this->interact->insert_ta_da($interaction_data);
 		    $senderemail=get_user_email($interaction_data->user_id);
-
-	  	    if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale) )//only product
+    
+	  	    if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale) )//only product 
 		    {
 		      $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. I am happy to receive your order which is mentioned below.';
 		      //$orderDetails=$this->interact->get_orderdeatils_user($interaction_data);
@@ -96,12 +96,12 @@ class Interaction extends REST_Controller {
 		      	if(isset($details->potencyData)){
 		        $orderData=$orderData.' '.$details->potencyData[0]->packSizeData[0]->productData[0]->name.'('.$details->potencyData[0]->packSizeData[0]->name.') mrp='.$details->potencyData[0]->packSizeData[0]->productData[0]->product_price.',quantity='.$details->productQuantity.' ,discount='.$details->discount.'%, net amount='.$details->totalAmount.' ';
 		        //$total_cost=$total_cost+$details['net_amount'];
-
-
+		        
+		        
 		         $emailordt= $emailordt.'<tr><td>'.$details->potencyData[0]->packSizeData[0]->productData[0]->name.'('.$details->potencyData[0]->packSizeData[0]->name.')</td><td>'.$details->potencyData[0]->packSizeData[0]->productData[0]->product_price.'</td><td>'.$details->productQuantity.'</td><td>'.$details->discount.'%</td><td>'.$details->totalAmount.'</td></tr>';
-
-
-
+		         
+		         
+		         
 		         }
 		         else
 		         {
@@ -113,8 +113,8 @@ class Interaction extends REST_Controller {
 		      $emailorderdata=' <h2>Your Order Details</h2> <table cellspacing="0" cellpadding="5" border="1" style="width:100%; border-color:#222;" ><thead><tr><th>Product</th><th>MRP</th><th>Qty.</th><th>Discount</th><th>Amount</th> </tr></thead> 
 		      <tbody>'.$emailordt.'</tbody><tfoot><tr><th colspan="4" style="text-align:right; border-right:none !important;">Total</th> <th colspan="4" style="text-align:right; border-left:none;">Rs.'.$interaction_data->totalSale.'</th><tr></tfoot></table> ';
 		    }
-
-
+		    
+			    
 		  if(isset($interaction_data->dealerId))
 		  {
 			if(is_numeric($interaction_data->dealerId))
@@ -142,9 +142,9 @@ class Interaction extends REST_Controller {
 		if($docdata!=FALSE)				{
 			$docNumber=$docdata->doc_phone;
 			$docEmail=$docdata->doc_email;
-		}
-
-				try{
+		}		
+										
+				try{	
           if(!isset($interaction_data->totalSale)){
               if ($interaction_data->interactionType==1){
                 # code...
@@ -165,7 +165,7 @@ class Interaction extends REST_Controller {
             {
               if(isset($interaction_data->totalSale) && isset($interaction_data->sample))
               {
-
+           
                  $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. Please give your valuable feedback for provided samples. I am happy to receive your order which is mentioned below.';
                  $sms1=$sms;
                  $sms=$sms.' '.$orderData;
@@ -188,23 +188,23 @@ class Interaction extends REST_Controller {
                   {
                     //send_msg($dealerSms,$dealerNumber);
                     if($dealerEmail!='')
-                    {
+                    { 
                       // $success =send_email($dealerEmail, $senderemail, $subject, $dealeremailbody);//send message to pharmacy/dealer
                     }
                   }
               }
               else if(isset($interaction_data->sample))// only sample
               {
-
+          
                 $sms= 'Thank you Dear Doctor for your valuable time. Kindly give your feedback for samples.';
                 $emailbody='<html><head><title>BJain Pharmaceuticals</title><style type="text/css">body{padding:0;margin:0;font-family: calibri;}.content{ width:40%; margin:0 auto;}.regards_box{float:left;margin-top:20px;}p.user_name_brand{ margin:0px;}h3.user_name_regards{
                   margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$sms.'</p><p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
               }
-              else if(isset($interaction_data->totalSale))//only product
+              else if(isset($interaction_data->totalSale))//only product 
               {
-
+           
                 $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. I am happy to receive your order which is mentioned below.';
                 $sms1=$sms;
                   $sms=$sms.' '.$orderData;
@@ -212,7 +212,7 @@ class Interaction extends REST_Controller {
                      margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$sms1.'</p>'.$emailorderdata.'<p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
-
+            
                   $dealerSms='Dear Dealer/Sub Dealer, we have received an order from Dr.'.$interaction_data->name.'  Kindly deliver at mentioned time and discount.The order details are mentioned below. '.$orderData;
 
                   $dealerSms1='Dear Dealer/Sub Dealer, we have received an order from Dr.'.$interaction_data->name.'  Kindly deliver at mentioned time and discount.The order details are mentioned below. ';
@@ -221,26 +221,26 @@ class Interaction extends REST_Controller {
                      margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$dealerSms1.'</p>'.$emailorderdata.'<p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
-
+       
                   /*Dealer */
                   if($interaction_data->sendmailDealer==1)
                   {
                    // send_msg($dealerSms,$dealerNumber);
                     if($dealerEmail!='')
-                    {
+                    { 
                      // $success =send_email($dealerEmail, $senderemail, $subject, $dealeremailbody);//send message to pharmacy/dealer
                     }
                   }
               }
 
-
+              
           }
 
         //send_msg($sms,$docNumber);
 	if($docEmail!='')
 	{
 		$success =send_email($docEmail, $senderemail, $subject, $emailbody );//send message to doctor	//send message to doctor
-
+	
 	}
 	}
 	catch(Exception $e){
@@ -251,10 +251,10 @@ class Interaction extends REST_Controller {
 	                'Code' => 500
 	            );
 	}
-
-
+	
+		    
       if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale))
-      {
+      {						
   	$userBoss=$this->user->getUserBoss($interaction_data->user_id);
         $username=get_user_name($interaction_data->user_id);
         $msname='';
@@ -267,7 +267,7 @@ class Interaction extends REST_Controller {
               if($data!=FALSE)
               {
                 $msname=$data->dealer_name;
-
+               
               }
             }else{
               //for pharmacy;
@@ -327,8 +327,8 @@ class Interaction extends REST_Controller {
 	                'Message' => 'Interaction save successfully',
 	                'Code' => 200
 	            );
-      }
-	        else
+      }	    
+	        else 
 	        {
 	            $result = array(
 	                'Data' => new stdClass(),
@@ -338,7 +338,7 @@ class Interaction extends REST_Controller {
 	            );
 	        }
         }
-        else
+        else 
         {
             $result = array(
                 'Data' => new stdClass(),
@@ -349,7 +349,7 @@ class Interaction extends REST_Controller {
         }
         $this->response($result);
     }
-
+    
     function sync_doctor_interaction_post()
     {
         # initialize variables
@@ -366,22 +366,22 @@ class Interaction extends REST_Controller {
 	{
 	$emailordt='';
 	$orderData='';
-
+	
         	$doc=$interaction_data->drId;
-
+		
 		if(strpos($doc, 'romp'))
 		{
 			$interaction_data->drId=get_doctor_id($doc);
 		}
-
+	
 	        $data = $this->interact->save_doctor_interaction($interaction_data);
-		if ($data!=FALSE)
+		if ($data!=FALSE) 
 		{
-
+			 
 		    $this->interact->insert_ta_da($interaction_data);
 		    $senderemail=get_user_email($interaction_data->user_id);
-
-	  	    if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale) )//only product
+    
+	  	    if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale) )//only product 
 		    {
 		      $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. I am happy to receive your order which is mentioned below.';
 		      //$orderDetails=$this->interact->get_orderdeatils_user($interaction_data);
@@ -390,9 +390,9 @@ class Interaction extends REST_Controller {
 		      	if(isset($details->potencyData)){
 		        $orderData=$orderData.' '.$details->potencyData[0]->packSizeData[0]->productData[0]->name.'('.$details->potencyData[0]->packSizeData[0]->name.') mrp='.$details->potencyData[0]->packSizeData[0]->productData[0]->product_price.',quantity='.$details->productQuantity.' ,discount='.$details->discount.'%, net amount='.$details->totalAmount.' ';
 		        //$total_cost=$total_cost+$details['net_amount'];
-
+		        
 		         $emailordt= $emailordt.'<tr><td>'.$details->potencyData[0]->packSizeData[0]->productData[0]->name.'('.$details->potencyData[0]->packSizeData[0]->name.')</td><td>'.$details->potencyData[0]->packSizeData[0]->productData[0]->product_price.'</td><td>'.$details->productQuantity.'</td><td>'.$details->discount.'%</td><td>'.$details->totalAmount.'</td></tr>';
-
+		         
 		         }
 		         else
 		         {
@@ -404,8 +404,8 @@ class Interaction extends REST_Controller {
 		      $emailorderdata=' <h2>Your Order Details</h2> <table cellspacing="0" cellpadding="5" border="1" style="width:100%; border-color:#222;" ><thead><tr><th>Product</th><th>MRP</th><th>Qty.</th><th>Discount</th><th>Amount</th> </tr></thead> 
 		      <tbody>'.$emailordt.'</tbody><tfoot><tr><th colspan="4" style="text-align:right; border-right:none !important;">Total</th> <th colspan="4" style="text-align:right; border-left:none;">Rs.'.$interaction_data->totalSale.'</th><tr></tfoot></table> ';
 		    }
-
-
+		    
+			    
 		  if(isset($interaction_data->dealerId))
 		  {
 			if(is_numeric($interaction_data->dealerId))
@@ -433,9 +433,9 @@ class Interaction extends REST_Controller {
 		if($docdata!=FALSE)				{
 			$docNumber=$docdata->doc_phone;
 			$docEmail=$docdata->doc_email;
-		}
-
-	try{
+		}		
+										
+	try{	
           if(!isset($interaction_data->totalSale)){
               if ($interaction_data->interactionType==1){
                 # code...
@@ -456,7 +456,7 @@ class Interaction extends REST_Controller {
             {
               if(isset($interaction_data->totalSale) && isset($interaction_data->sample))
               {
-
+           
                  $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. Please give your valuable feedback for provided samples. I am happy to receive your order which is mentioned below.';
                  $sms1=$sms;
                  $sms=$sms.' '.$orderData;
@@ -480,7 +480,7 @@ class Interaction extends REST_Controller {
                     //send_msg($dealerSms,$dealerNumber);
 
                     if($dealerEmail!='')
-                    {
+                    { 
                       // $success =send_email($dealerEmail, $senderemail, $subject, $dealeremailbody);//send message to pharmacy/dealer
 
                     }
@@ -488,16 +488,16 @@ class Interaction extends REST_Controller {
               }
               else if(isset($interaction_data->sample))// only sample
               {
-
+          
                 $sms= 'Thank you Dear Doctor for your valuable time. Kindly give your feedback for samples.';
                 $emailbody='<html><head><title>BJain Pharmaceuticals</title><style type="text/css">body{padding:0;margin:0;font-family: calibri;}.content{ width:40%; margin:0 auto;}.regards_box{float:left;margin-top:20px;}p.user_name_brand{ margin:0px;}h3.user_name_regards{
                   margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$sms.'</p><p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
               }
-              else if(isset($interaction_data->totalSale))//only product
+              else if(isset($interaction_data->totalSale))//only product 
               {
-
+           
                 $sms= 'Thank you Dear Doctor for your support to B. Jain Pharma. I am happy to receive your order which is mentioned below.';
                 $sms1=$sms;
                   $sms=$sms.' '.$orderData;
@@ -505,7 +505,7 @@ class Interaction extends REST_Controller {
                      margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$sms1.'</p>'.$emailorderdata.'<p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
-
+            
                   $dealerSms='Dear Dealer/Sub Dealer, we have received an order from Dr.'.$interaction_data->name.'  Kindly deliver at mentioned time and discount.The order details are mentioned below. '.$orderData;
 
                   $dealerSms1='Dear Dealer/Sub Dealer, we have received an order from Dr.'.$interaction_data->name.'  Kindly deliver at mentioned time and discount.The order details are mentioned below. ';
@@ -514,35 +514,35 @@ class Interaction extends REST_Controller {
                      margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="'.base_url().'/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center>  
                   <h3>Dear,</h3> <p>'.$dealerSms1.'</p>'.$emailorderdata.'<p><i>This is an auto generated email.</i></p>
                   <div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">'.get_user_name($interaction_data->user_id).'<br>BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
-
+       
                   /*Dealer */
                   if($interaction_data->sendmailDealer==1)
                   {
                    // send_msg($dealerSms,$dealerNumber);
                     if($dealerEmail!='')
-                    {
+                    { 
                      // $success =send_email($dealerEmail, $senderemail, $subject, $dealeremailbody);//send message to pharmacy/dealer
                     }
                   }
               }
 
-
+              
           }
 
         //send_msg($sms,$docNumber);
 	if($docEmail!='')
 	{
 		$success =send_email($docEmail, $senderemail, $subject, $emailbody );//send message to doctor	//send message to doctor
-
+	
 	}
 	}
 	catch(Exception $e){
-
+		
 	}
-
-
+	
+		    
       if(isset($interaction_data->totalSale) && !empty($interaction_data->totalSale))
-      {
+      {						
   	$userBoss=$this->user->getUserBoss($interaction_data->user_id);
         $username=get_user_name($interaction_data->user_id);
         $msname='';
@@ -555,7 +555,7 @@ class Interaction extends REST_Controller {
               if($data!=FALSE)
               {
                 $msname=$data->dealer_name;
-
+               
               }
             }else{
               //for pharmacy;
@@ -604,11 +604,11 @@ class Interaction extends REST_Controller {
 	}
 
         //send_email('pharma.reports@bjain.com',  $senderemail,$subject, $userbosemail);//send only email to H.O.
-      }
+      }	    
 
     }
-
-
+    
+	
         $result = array(
 	                //'Data' => $data,
 			// 'Status' => true,
@@ -625,7 +625,7 @@ class Interaction extends REST_Controller {
 $msg='';
 		$interaction_data=json_decode($this->input->raw_input_stream);
 		//pr($interaction_data);
-
+		
 	    if (!isset($interaction_data->dateOfInteraction) || empty($interaction_data->dateOfInteraction))
 	    {
 		   	$msg = 'Please enter Date of Interaction';
@@ -659,10 +659,10 @@ $msg='';
 		   	$msg = 'Please Enter City Pincode of doctor';
 		}
 
-       	if ($msg == '')
+       	if ($msg == '') 
         {
 		    $data = $this->interact->save_pharma_interaction($interaction_data);
-			if ($data!=FALSE)
+			if ($data!=FALSE) 
 			{
 			    $this->interact->insert_ta_da($interaction_data);
 	           	$result = array(
@@ -671,8 +671,8 @@ $msg='';
 					'Message' => 'Interaction save successfully',
 					'Code' => 200
 				);
-	     	}
-	        else
+	     	}	    
+	        else 
 	        {
 	            $result = array(
 	                'Data' => new stdClass(),
@@ -682,7 +682,7 @@ $msg='';
 	            );
 	        }
         }
-        else
+        else 
         {
             $result = array(
                 'Data' => new stdClass(),
@@ -693,7 +693,7 @@ $msg='';
         }
         $this->response($result);
     }
-
+    
     function sync_pharma_interaction_post()
     {
         # initialize variables
@@ -707,7 +707,7 @@ $msg='';
 			$interaction_data->drId=get_pharma_id($pharma);
 		}
 		$data = $this->interact->save_pharma_interaction($interaction_data);
-		if ($data!=FALSE)
+		if ($data!=FALSE) 
 		{
 
 		    $this->interact->insert_ta_da($interaction_data);
@@ -719,7 +719,7 @@ $msg='';
             );
         $this->response($result);
      }
-
+     
      /*Dealer Interaction*/
     function dealer_interaction_post()
     {
@@ -727,7 +727,7 @@ $msg='';
         # initialize variables
 	$interaction_data=json_decode($this->input->raw_input_stream);
 		//pr($interaction_data);
-
+		
 	    if (!isset($interaction_data->dateOfInteraction) || empty($interaction_data->dateOfInteraction))
 	    {
 		   	$msg = 'Please enter Date of Interaction';
@@ -758,10 +758,10 @@ $msg='';
 		   	$msg = 'Please Enter City Pincode of doctor';
 		}
 
-       	if ($msg == '')
+       	if ($msg == '') 
         {
 		    $data = $this->interact->save_dealer_interaction($interaction_data);
-			if ($data!=FALSE)
+			if ($data!=FALSE) 
 			{
 			    $this->interact->insert_ta_da($interaction_data);
 	           	$result = array(
@@ -770,8 +770,8 @@ $msg='';
 					'Message' => 'Interaction save successfully',
 					'Code' => 200
 				);
-	     	}
-	        else
+	     	}	    
+	        else 
 	        {
 	            $result = array(
 	                'Data' => new stdClass(),
@@ -781,7 +781,7 @@ $msg='';
 	            );
 	        }
         }
-        else
+        else 
         {
             $result = array(
                 'Data' => new stdClass(),
@@ -792,7 +792,7 @@ $msg='';
         }
         $this->response($result);
     }
-
+    
     function sync_dealer_interaction_post()
     {
         # initialize variables
@@ -802,7 +802,7 @@ $msg='';
 	{
 
 		$data = $this->interact->save_dealer_interaction($interaction_data);
-		if ($data!=FALSE)
+		if ($data!=FALSE) 
 		{
 
 		    $this->interact->insert_ta_da($interaction_data);
@@ -822,8 +822,8 @@ $msg='';
      	!!.Code Starts Here.!!
      */
 
-/*After clicking over Add Secondary/Add Product*/
-	function log_interaction_details_post(){
+     function log_interaction_details_post(){
+     	/*After clicking over Add Secondary/Add Product*/
 		 $msg='';
 		 # initialize variables
 		 $interaction_data=json_decode($this->input->raw_input_stream);
@@ -896,7 +896,8 @@ $msg='';
 
 	 }
 
-/*Single Interaction   Doctor / Sub Dealer / Dealer*/
+
+
 	 function single_interaction_post(){
 
 		 $orderData='';
@@ -952,27 +953,17 @@ $msg='';
 						 $sms = 'Thank you Dear Doctor for your support to B. Jain Pharma. I am happy to receive your order which is mentioned below.';
 						 $orderDetails = $this->dealer->get_orderdeatils_user($interaction_data);
 //pr($orderDetails); die;
-						 if(!empty($orderDetails)){
-							 foreach ($orderDetails as $details) {
-								 $orderData = $orderData .' ' .get_product_name($details['product_id']) . '(' .
-									 get_packsize_name($details['product_id']).',quantity=' . $details['quantity'].'.';
+						 foreach ($orderDetails as $details) {
+							 $orderData = $orderData .' ' .get_product_name($details['product_id']) . '(' .
+								 get_packsize_name($details['product_id']).',quantity=' . $details['quantity'].'.';
 
-								 $total_cost = $total_cost + $details['net_amount'];
+							 $total_cost = $total_cost + $details['net_amount'];
 
-								 $emailordt = $emailordt . '<tr><td>' . get_product_name($details['product_id']) . '(' . get_packsize_name($details['product_id']) . ')</td><td>' . $details['quantity'] . '</td></tr>';
+							 $emailordt = $emailordt . '<tr><td>' . get_product_name($details['product_id']) . '(' . get_packsize_name($details['product_id']) . ')</td><td>' . $details['quantity'] . '</td></tr>';
 
-							 }
-							 $emailorderdata = ' <h2>Your Order Details</h2> <table cellspacing="0" cellpadding="5" border="1" style="width:100%; border-color:#222;" ><thead><tr><th>Product</th><th>Qty.</th> </tr></thead> 
-        <tbody>' . $emailordt . '</tbody></table> ';
-						 }else{
-							 $result = array(
-							 'Data' => new stdClass(),
-							 'Message' => 'Alert.! You Already Interacted with same person on same date.',
-							 'Code' => 500
-							 );
-							 $this->response($result);
 						 }
-
+						 $emailorderdata = ' <h2>Your Order Details</h2> <table cellspacing="0" cellpadding="5" border="1" style="width:100%; border-color:#222;" ><thead><tr><th>Product</th><th>Qty.</th> </tr></thead> 
+        <tbody>' . $emailordt . '</tbody></table> ';
 					 }
 
 					 if ((isset($interaction_data->telephonic)) || (isset($interaction_data->meet_or_not)) ) {
@@ -986,7 +977,6 @@ $msg='';
 							 'Message' => 'Alert.! You have taken leave  or holiday on that day please change date!!',
 							 'Code' => 500
 							 );
-							 $this->response($result);
 //							 return "Alert.! You have taken leave  or holiday on that day please change date!!";
 						 }
 					 }
@@ -999,7 +989,6 @@ $msg='';
 							 'Message' => 'Alert! Add Secondary / Add Product is Mandatory after  - Order Received.',
 							 'Code' => 500
 						 );
-						 $this->response($result);
 							 }
 						 }
 
@@ -1138,7 +1127,6 @@ $msg='';
 										 'Message' => 'Alert! Something went wrong.',
 										 'Code' => 500
 										 );
-									 $this->response($result);
 //									 return "Alert! Something went wrong.";
 								 }
 
@@ -1271,7 +1259,6 @@ $msg='';
 										 'Message' => 'Alert! Something went wrong.',
 										 'Code' => 500
 									 );
-									 $this->response($result);
 //									 return "Alert! Something went wrong.";
 								 }
 							 }
@@ -1340,7 +1327,6 @@ $msg='';
 										 'Message' => 'Alert! Something went wrong.',
 										 'Code' => 500
 									 );
-									 $this->response($result);
 //									 return "Alert! Something went wrong.";
 								 }
 							 }
@@ -1419,7 +1405,6 @@ $msg='';
 													 'Message' => 'Alert! Something went wrong.',
 													 'Code' => 500
 												 );
-												 $this->response($result);
 //												 return "Alert! Something went wrong.";
 											 }
 										 }
@@ -1513,103 +1498,6 @@ $msg='';
 		 $this->response($result);
 	 }
 
-/*Joint Interaction  For Managers*/
-	 function joint_interaction_post()
-	 {
-
-		 $msg = '';
-		 # initialize variables
-		 $interaction_data = json_decode($this->input->raw_input_stream);
-
-		 if ($msg == '') {
-			 $summaryArr = array(
-				 'summry1' => 'THE PRIMARY / SECONDARY ORDER RATIO : ' . $interaction_data->remark[0],
-				 'summry2' => 'THE CURRENT RATION OF TARGET TO ACHIEVEMENT : ' . $interaction_data->remark[1],
-				 'summry3' => 'THE DAILY CALL AVERAGE : ' . $interaction_data->remark[2],
-				 'summry4' => 'DOCTORS VISITED MORE THAN 3 TIMES BUT NO ORDER : ' . $interaction_data->remark[3],
-				 'summry5' => 'SECONDARY PAYMENT OVERDUE IN MARKET : ' . $interaction_data->remark[4]
-			 );
-
-			 if ($interaction_data->stay || $interaction_data->up) {
-				 $success = $this->dealer->save_asm_dsr($interaction_data);
-
-				 if ($success = 1) {
-					 /*Mail to Boss(Manager), Ajay Mahajan & Nishant */
-					 $joint_with = $interaction_data->joint_workwith;
-					 $joint_with_name = get_user_name($joint_with);
-					 $boss_userID = logged_user_boss();
-					 $boss_mail = get_boss_email_user($boss_userID);
-					 $date_Time = date("d-M-Y/D");
-					 $user_ID = logged_user_data();
-					 $user_name = get_user_name($user_ID);
-					 $user_email = get_boss_email_user($user_ID);
-
-					 $mailArr = array(
-						 'boss' => $boss_mail,
-						 'nishant' => 'nishant@bjain.com',
-						 'ajay' => 'pharmamarketing@bjain.com',
-						 'user' => $user_email,
-						 'nitin' => 'php@bjaintech.com'
-					 );
-
-					 foreach ($mailArr as $mailID) {
-						 $dealeremailbody = '<html><head><title>BJain Pharmaceuticals</title><style type="text/css">body{padding:0;margin:0;font-family: calibri;}.content{ width:40%; margin:0 auto;}.regards_box{float:left;margin-top:20px;}p.user_name_brand{ margin:0px;}h3.user_name_regards{margin:0px;padding-bottom:10px;}img.email_logo{ margin:15px 0px;}</style></head><body><div class="content"><center><img src="' . base_url() . '/design/bjain_pharma/bjain_logo.png" class="email_logo" style="width:250px;" /></center><h3>Dear,</h3> <p>Here\'s the summary of Joint Interaction ' . $user_name . ' with ' . $joint_with_name . ' on ' . $date_Time . '. 	</p> <ul>';
-
-						 $body2 = array();
-						 foreach ($summaryArr as $anwsers) {
-							 $body2[] = "<li>" . $anwsers . "</li>";
-						 }
-						 $dealeremailbody2 = implode(' ', $body2);
-
-						 $dealeremailbody3 = '</ul> <p style="font-size: 11px; text-align: center;"><i>(This is an auto-generated email.)</i></p><div class="regards_box"><h3 class="user_name_regards">Regards,</h3><p class="user_name_brand">BJain Pharmaceuticals Pvt. Ltd.</p></div></div></body></html>';
-
-						 $message = $dealeremailbody . $dealeremailbody2 . $dealeremailbody3;
-						 $subject = "Joint Interaction of " . $user_name . "with " . $joint_with_name . " Summary Report on "
-							 . $date_Time;
-
-						 /*Open on Server for mailing */
-//						 $mail_Send = send_email($mailID, 'pharma.reports@bjain.com', $subject, $message);
-						 $mail_Send = send_email($mailID, 'php@bjaintech.com', $subject, $message);
-
-					 }
-
-					 $result = array(
-						 'Data' => new stdClass(),
-						 'Status' => true,
-						 'Message' => ' Success! Interaction are being saved for this.',
-						 'Code' => 200
-					 );
-
-				 } else {
-					 $result = array(
-						 'Data' => new stdClass(),
-						 'Status' => false,
-						 'Message' => ' Alert! Interaction was not saved please try later..',
-						 'Code' => 404
-					 );
-
-				 }
-			 } else {
-				 $result = array(
-					 'Data' => new stdClass(),
-					 'Status' => false,
-					 'Message' => 'Alert! Stay / Not Stay - Features Not Used..',
-					 'Code' => 404
-				 );
-
-			 }
-
-		 } else {
-			 $result = array(
-				 'Data' => new stdClass(),
-				 'Status' => false,
-				 'Message' => $msg,
-				 'Code' => 404
-			 );
-		 }
-		 $this->response($result);
-
-	 }
 
 
 

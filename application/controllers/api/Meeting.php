@@ -403,21 +403,6 @@ class Meeting extends REST_Controller {
     function monthly_tp_post()
     {
         # initialize variables
-//	$msg = '';
-//	$tour_data=json_decode($this->input->raw_input_stream);
-//        if (!isset($tour_data->month) || empty($tour_data->month))
-//        {
-//	   $msg = 'Please enter month';
-//	}
-//	elseif(!isset($tour_data->year) || empty($tour_data->year))
-//	{
-//		$msg = 'Please enter year';
-//	}
-//	elseif(!isset ($tour_data->user_id) || empty($tour_data->user_id))
-//	{
-//		$msg = 'Please Enter User Id';
-//	}
-
 
 		$post= array_map('trim', $this->input->post());
 		$msg ='';
@@ -445,7 +430,9 @@ class Meeting extends REST_Controller {
 	        $data['holiday'] = get_holiday_data($userid,$start_date,$end_date);
    	        $data['assign_task']  = get_assign_task_by($userid,$start_date,$end_date);
 	        $data['follow_data']  = get_followup_data($userid,$start_date,$end_date);
-		if ($data!=FALSE) 
+	        $data['leave_data']  = get_leaves_inmonth($userid,$start_date,$end_date);
+
+		if ($data!=FALSE)
 		{ 
 	            $result = array(
 	                'Data' => $data,

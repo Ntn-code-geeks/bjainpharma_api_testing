@@ -471,99 +471,237 @@ public function update_dealer_of_pharma($data=''){
 
     public function pharmacymaster_info($limit='',$start='',$data='',$city_search=''){
 
+         
+
         $cities_are = logged_user_cities();
-        $city_id=array();
-		if($city_search==''){
+
+		$city_id=array();
+
+		if($city_search=='')
+
+		{
+
 			$city_id=explode(',', $cities_are);
-		}else{
-// 			$city_id[]=$city_search;
-$city_id=get_state_id($city_search);
+
 		}
 
-		$boss_are = logged_user_boss();
-		$boss_id=explode(',', $boss_are);
-		$pharma_are = logged_user_pharmaare();
-		$pharma_id=explode(',', $pharma_are);
-		//         echo $pharma_are; die;
-		$arr = "pharma.sp_code,pharma.pharma_id as id,pharma.d_id as dealers_id,pharma.company_name as com_name,pharma.company_email as com_email,pharma.company_phone as com_ph,pharma.pharmacy_status as status,pharma.blocked,pharma.city_pincode as city_pincode,pharma.city_id as city_id";
-		$this->db->select($arr);
-		$this->db->from("pharmacy_list pharma");
-//        $this->db->join("srm_school_master sm" , "cl.s_id=sm.id");
-//        $this->db->join("dealer d" , "d.dealer_id=doc.d_id");
-       // $this->db->join("city c" , "c.city_id=pharma.city_id");
-      //  $this->db->join("state st" , "st.state_id=pharma.state_id");
-        if(!empty($data)){
-         $this->db->like('pharma.company_name',$data);
-         $this->db->or_like('c.city_name',$data);
-         $this->db->or_like('st.state_name',$data);
-        }
-        if($city_search!=''){
-//			if(is_admin()){
-				// $this->db->where('pharma.city_id',$city_search);
-				 $this->db->where('pharma.state_id',$city_id);
-//			}
+		else
+
+		{
+
+			$city_id[]=$city_search;
+
 		}
+
+        
+
+         $boss_are = logged_user_boss();
+
+          $boss_id=explode(',', $boss_are);
+
+          
+
+          
+
+          $pharma_are = logged_user_pharmaare();
+
+          $pharma_id=explode(',', $pharma_are);
+
+//         echo $pharma_are; die;
+
+        
+
+         $arr = "pharma.sp_code,pharma.pharma_id as id,pharma.d_id as dealers_id,pharma.company_name as com_name,pharma.company_email as com_email,pharma.company_phone as com_ph,pharma.pharmacy_status as status,pharma.blocked,pharma.city_pincode as city_pincode,pharma.city_id as city_id";
+        $this->db->select($arr);
+        $this->db->from("pharmacy_list pharma");
+//        $this->db->join("srm_school_master sm" , "cl.s_id=sm.id");
+
+//        $this->db->join("dealer d" , "d.dealer_id=doc.d_id");
+
+       // $this->db->join("city c" , "c.city_id=pharma.city_id");
+
+      //  $this->db->join("state st" , "st.state_id=pharma.state_id");
+
+
+
+        if(!empty($data)){
+
+
+
+         $this->db->like('pharma.company_name',$data);
+
+         $this->db->or_like('c.city_name',$data);
+
+         $this->db->or_like('st.state_name',$data);
+
+         
+
+        }
+
+             if($city_search!='')
+
+		{
+
+
+
+			if(is_admin()){ 
+
+				$this->db->where('pharma.city_id',$city_search);
+
+			}
+
+		}
+
+        
 
         if(!is_admin()){  // this condition is not for admin user
-         $where_b ='( ';
+
+        
+
+         $where_b ='( '; 
+
 //         $this->db->or_where('pharma.crm_user_id', logged_user_data());
+
           $where_b .=" pharma.crm_user_id = ".logged_user_data();
+
          if(!empty($boss_are)){
              $where_b .=" AND ( ";
-             $k=0;
+             $k=0;    
+
             foreach($boss_id as $value){
+
 //          $this->db->or_where('pharma.city_id',$value);
-			 if($k > 0 && count($boss_id)!=$k){
-			   $where_b .= " OR ";
+
+                 if($k > 0 && count($boss_id)!=$k){
+
+                   $where_b .= " OR ";
+
                }
-			 $where_b  .= " pharma.crm_user_id  != $value ";
+
+                $where_b  .= " pharma.crm_user_id  != $value ";
+
+               
+
                 $k++;
+
             }
+
+            
+
+           
              $where_b .=' ) ';
            }
+
          $where_b .='  ) ';
-        if($city_search==''){
-			//$this->db->or_where($where_b);
+
+        if($city_search=='')
+
+		{
+
+			//$this->db->or_where($where_b); 
+
 		}
+
         if(!empty($cities_are) && !empty($city_search)){
-             $where='( ';
-                $k=0;
+
+             $where='( '; 
+
+                $k=0;    
+
             foreach($city_id as $value){
+
 //          $this->db->or_where('pharma.city_id',$value);
+
                 $where  .= " pharma.city_id = $value ";
+
                  $k++;
+
                if($k > 0 && count($city_id)!=$k){
+
                    $where .= " OR ";
+
                }
+
+               
+
             }
+
              $where .=' )';
+
              $this->db->or_where($where);  // changes from where to or beacuase other city pharmacy added by user is not shown
+
         }
 
+        
+
+        
+
          if(!empty($pharma_are)){
-             $where='( ';
-                $k=0;
+
+             $where='( '; 
+
+                $k=0;    
+
             foreach($pharma_id as $value){
+
 //          $this->db->or_where('pharma.city_id',$value);
+
                 $where  .= " pharma.pharma_id = '$value'";
-                $k++;
+
+                 $k++;
+
+                
+
                if($k > 0 && count($pharma_id)!=$k){
+
                    $where .= " OR ";
+
                }
+
+               
+
             }
+
              $where .=' )';
+
              $this->db->or_where($where);
+
         }
+
+
+
         }
+
+        
+
+        
+
          //$this->db->limit($limit, decode($start));
+
+        
+
+        
+
         $query = $this->db->get();
+
 //         echo $this->db->last_query(); die;
+
          if($this->db->affected_rows()){
+
+            
+
             return json_encode($query->result_array());
+
         }
+
         else{
+
+            
+
             return FALSE;
+
         }
+
     }
 
     
@@ -572,21 +710,19 @@ $city_id=get_state_id($city_search);
 
         
 
-        $arr = "pharma.sp_code,pharma.doc_navigate_id as navigonid,"
-                . "pharma.city_pincode as city_pincode,pharma.pharma_id as id,"
-                . "pharma.d_id as dealers_id,pharma.company_name as com_name,"
-                . "pharma.company_email as com_email,pharma.company_phone as com_ph,"
-                . "pharma.company_address as address,pharma.owner_dob as dob,"
-                . "pharma.owner_name,pharma.owner_phone,pharma.owner_email,pharma.state_id,"
-                . "pharma.city_id,c.city_name,st.state_name";
+        $arr = "pharma.sp_code,pharma.doc_navigate_id as navigonid,pharma.city_pincode as city_pincode,pharma.pharma_id as id,pharma.d_id as dealers_id,pharma.company_name as com_name,pharma.company_email as com_email,pharma.company_phone as com_ph,pharma.company_address as address,pharma.owner_dob as dob,pharma.owner_name,pharma.owner_phone,pharma.owner_email,pharma.state_id,pharma.city_id,c.city_name,st.state_name";
 
         $this->db->select($arr);
 
         $this->db->from("pharmacy_list pharma");
 
-        $this->db->join("city c" , "c.city_id=pharma.city_id",'left');
+//        $this->db->join("srm_school_master sm" , "cl.s_id=sm.id");
 
-        $this->db->join("state st" , "st.state_id=pharma.state_id",'left');
+//        $this->db->join("school s" , "s.school_id=cl.s_id");
+
+         $this->db->join("city c" , "c.city_id=pharma.city_id");
+
+        $this->db->join("state st" , "st.state_id=pharma.state_id");
 
         $this->db->where("pharma.pharma_id",$cm_id);
 

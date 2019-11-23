@@ -33,12 +33,9 @@ class Doctor_model extends CI_Model {
         public function add_doctormaster($data,$doc_id=''){
       
 //        pr($data);
-////        echo "i".$doc_id;
+//        echo "i".$doc_id;
 //        die;
     
-            
-//           $spcode_list = user_sp_code();
-//           pr($spcode_list); die;
         if(!empty($data['dob'])){
        $dob = date('Y-m-d', strtotime($data['dob']));
         }
@@ -103,7 +100,7 @@ class Doctor_model extends CI_Model {
           
           $doctor_data = 
                 array(
-                    'doctor_id'=>$newid,
+                     'doctor_id'=>$newid,
                     'doc_name'=>$data['doctor_name'],
                     'doc_email'=>$data['doctor_email'],
                     'doc_phone'=>$data['doctor_num'],
@@ -262,7 +259,7 @@ class Doctor_model extends CI_Model {
  
     public function doctormaster_info($limit='',$start='',$data='',$city_search=''){
         
-       $desig_id=logged_user_desig();
+         $desig_id=logged_user_desig();
        $log_userid = logged_user_data();
         
         $cities_are = logged_user_cities();
@@ -275,12 +272,12 @@ class Doctor_model extends CI_Model {
 		{
 			$city_id[]=$city_search;
 		}
-//        echo $city_search; die;
+        
            $boss_are = logged_user_boss();
-           $boss_id=explode(',', $boss_are);
+          $boss_id=explode(',', $boss_are);
         
            $doc_are = logged_user_doc();
-           $doc_id=explode(',', $doc_are);
+          $doc_id=explode(',', $doc_are);
           
           
          $arr = "doc.sp_code,doc.doctor_id as id,doc.d_id as dealers_id,doc.doc_name as d_name,doc.doc_email as d_email,doc.doc_phone as d_ph,doc.doc_status as status,doc.blocked,doc.city_pincode as city_pincode,doc.city_id as city_id";
@@ -294,8 +291,8 @@ class Doctor_model extends CI_Model {
         if(!empty($data)){
 
          $this->db->like('doc.doc_name',$data);
-//       $this->db->or_like('cl.c_email',$data);
-//       $this->db->or_like('s.s_phone',$data);
+//         $this->db->or_like('cl.c_email',$data);
+//         $this->db->or_like('s.s_phone',$data);
          $this->db->or_like('c.city_name',$data);
          $this->db->or_like('st.state_name',$data);
 //     }
@@ -305,10 +302,9 @@ class Doctor_model extends CI_Model {
 		if($city_search!='')
 		{
 
-//			if(is_admin()){ 
+			if(is_admin()){ 
 				$this->db->where('doc.city_id',$city_search);
-//			}
-                        
+			}
 		}
         if(!is_admin()){
         
@@ -378,7 +374,18 @@ class Doctor_model extends CI_Model {
 
         
     }
-
+//         $this->db->where('doc.crm_user_id', logged_user_data());
+//        if(!empty($cities_are)){
+//             
+//            foreach($city_id as $value){
+//          $this->db->or_where('doc.city_id',$value);
+//
+//            }
+//           }
+        
+        
+        // $this->db->limit($limit, decode($start));
+        
         
         $query = $this->db->get();
 //echo $this->db->last_query(); die;
@@ -390,353 +397,11 @@ class Doctor_model extends CI_Model {
             
             return FALSE;
         }
-        
-    }
-    
-     public function doctormaster($filter){
-        
-        $spcode = explode(',',$this->session->userdata('sp_code'));
-          
-         $desig_id=logged_user_desig();
-        $log_userid = logged_user_data();
-        
-               
-           $boss_are = logged_user_boss();
-          $boss_id=explode(',', $boss_are);
-        
-           $doc_are = logged_user_doc();
-          $doc_id=explode(',', $doc_are);
-        
-          $limit = isset($filter['limit']) ? $filter['limit'] : 0;
-
-          $start = isset($filter['start']) ? $filter['start'] : 0;
-                       
-          $searchIn = isset($filter['searchin']) ? $filter['searchin'] : 1;
-          
-        
-        $arr = "doc.sp_code,doc.doctor_id as id,doc.d_id as dealers_id,doc.doc_name as d_name,"
-                . "doc.doc_email as d_email,doc.doc_phone as d_ph,c.city_name,"
-                . "doc.doc_status as status,doc.blocked,doc.city_pincode as city_pincode,doc.city_id as city_id";
-        $this->db->select($arr);
-        $this->db->from("doctor_list doc");
-       $this->db->join("city c" , "c.city_id=doc.city_id");
-        if($searchIn!=1){
-
-//         $this->db->like('doc.doc_name',$searchIn);
-//         $this->db->or_like('doc.doc_phone',$searchIn);
-//         $this->db->or_like('doc.city_pincode',$searchIn);
-//         $this->db->or_like('doc.doc_email',$searchIn);
-//         $this->db->or_like('c.city_name',$searchIn);
-            
-           $like_cond = " (`doc`.`doc_name` LIKE '%$searchIn%' "
-                        . " OR `doc`.`doc_phone` LIKE '%$searchIn%' "
-                        . " OR `doc`.`city_pincode` LIKE '%$searchIn%'"
-                        . " OR `doc`.`doc_email` LIKE '%$searchIn%' "
-                        . "OR `c`.`city_name` LIKE '%$searchIn%' ) "; 
-           $this->db->where($like_cond); 
-            
-        
-        }
-        
-	
-        if(!is_admin()){
-            
-             $this->db->where_in('doc.sp_code',$spcode); // changes from where to or beacuase other city doctor added by user is not shown
-       
-        
-        $where_b ='( '; 
-//         $this->db->or_where('pharma.crm_user_id', logged_user_data());
-          $where_b .=" doc.crm_user_id = ".logged_user_data() ;
-         if(!empty($boss_are)){
-             $where_b .=" AND ( ";
-             $k=0;    
-            foreach($boss_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                
-                 if($k > 0 && count($boss_id)!=$k){
-                   $where_b .= " OR ";
-               }
-                
-                
-                $where_b  .= " doc.crm_user_id  != $value ";
-               
-               
-                
-                $k++;
-            }
-            
-            $where_b .=' ) ';
-           }
-         $where_b .=' ) ';
-		
-          
-        
-        
-        
-          if(!empty($doc_are)){
-             $where='( '; 
-                $k=0;    
-            foreach($doc_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                $where  .= " doc.doctor_id = '$value'";
-                 $k++;
-                
-               if($k > 0 && count($doc_id)!=$k){
-                   $where .= " OR ";
-               }
-               
-            }
-             $where .=' )';
-             $this->db->or_where($where);
-        }
-
-        
-    }
-    $this->db->limit($limit,$start);
-    $this->db->order_by($filter['order'], $filter['dir']);
-                            
-        
-        $query = $this->db->get();
-//echo $this->db->last_query(); die;
-         if($this->db->affected_rows()){
-            
-            return $query->result_array();
-        }
-        else{
-            
-            return FALSE;
-        }
-        
-    }
-    
-//    
-    public function doctormaster_totaldata($filter){
-        
-        $spcode = explode(',',$this->session->userdata('sp_code'));
-          
-        $desig_id=logged_user_desig();
-        $log_userid = logged_user_data();
-        
-               
-           $boss_are = logged_user_boss();
-          $boss_id=explode(',', $boss_are);
-        
-           $doc_are = logged_user_doc();
-          $doc_id=explode(',', $doc_are);
-        
-          $limit = isset($filter['limit']) ? $filter['limit'] : 0;
-
-          $start = isset($filter['start']) ? $filter['start'] : 0;
-                       
-          $searchIn = isset($filter['searchin']) ? $filter['searchin'] : 1;
-          
-        
-        $arr = "doc.sp_code,doc.doctor_id as id,doc.d_id as dealers_id,doc.doc_name as d_name,"
-                . "doc.doc_email as d_email,doc.doc_phone as d_ph,c.city_name,"
-                . "doc.doc_status as status,doc.blocked,doc.city_pincode as city_pincode,doc.city_id as city_id";
-        $this->db->select($arr);
-        $this->db->from("doctor_list doc");
-        $this->db->join("city c" , "c.city_id=doc.city_id");
-//        if(!empty($data)){
-//
-//         $this->db->like('doc.doc_name',$searchIn);
-//         $this->db->or_like('doc.doc_phone',$searchIn);
-//         $this->db->or_like('doc.city_pincode',$searchIn);
-//         $this->db->or_like('doc.doc_email',$searchIn);
-//         $this->db->or_like('c.city_name',$searchIn);
-//         $this->db->or_like('st.state_name',$searchIn);
-//        }
-        
-	
-        if(!is_admin()){
-            
-             $this->db->where_in('doc.sp_code',$spcode); // changes from where to or beacuase other city doctor added by user is not shown
-       
-        
-        $where_b ='( '; 
-//         $this->db->or_where('pharma.crm_user_id', logged_user_data());
-          $where_b .=" doc.crm_user_id = ".logged_user_data() ;
-         if(!empty($boss_are)){
-             $where_b .=" AND ( ";
-             $k=0;    
-            foreach($boss_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                
-                 if($k > 0 && count($boss_id)!=$k){
-                   $where_b .= " OR ";
-               }
-                
-                
-                $where_b  .= " doc.crm_user_id  != $value ";
-               
-               
-                
-                $k++;
-            }
-            
-            $where_b .=' ) ';
-           }
-         $where_b .=' ) ';
-		
-          
-        
-        
-        
-          if(!empty($doc_are)){
-             $where='( '; 
-                $k=0;    
-            foreach($doc_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                $where  .= " doc.doctor_id = '$value'";
-                 $k++;
-                
-               if($k > 0 && count($doc_id)!=$k){
-                   $where .= " OR ";
-               }
-               
-            }
-             $where .=' )';
-             $this->db->or_where($where);
-        }
-
-        
-    }
-//    $this->db->limit($limit,$start);
-    $this->db->order_by($filter['order'], $filter['dir']);
-                            
-        
-        $query = $this->db->get();
-//echo $this->db->last_query(); die;
-         if($this->db->affected_rows()){
-            
-            return count($query->result_array());
-        }
-        else{
-            
-            return FALSE;
-        }
-        
-    }
-    
-    
-     public function doctormaster_filter_totaldata($filter){
-        
-        $spcode = explode(',',$this->session->userdata('sp_code'));
-          
-         $desig_id=logged_user_desig();
-        $log_userid = logged_user_data();
-        
-               
-           $boss_are = logged_user_boss();
-          $boss_id=explode(',', $boss_are);
-        
-           $doc_are = logged_user_doc();
-          $doc_id=explode(',', $doc_are);
-        
-          $limit = isset($filter['limit']) ? $filter['limit'] : 0;
-
-          $start = isset($filter['start']) ? $filter['start'] : 0;
-                       
-          $searchIn = isset($filter['searchin']) ? $filter['searchin'] : 1;
-          
-        
-        $arr = "doc.sp_code,doc.doctor_id as id,doc.d_id as dealers_id,doc.doc_name as d_name,"
-                . "doc.doc_email as d_email,doc.doc_phone as d_ph,c.city_name,"
-                . "doc.doc_status as status,doc.blocked,doc.city_pincode as city_pincode,doc.city_id as city_id";
-        $this->db->select($arr);
-        $this->db->from("doctor_list doc");
-        $this->db->join("city c" , "c.city_id=doc.city_id");
-       if($searchIn!=1){
-            $where_like = "(`doc`.`doc_name` LIKE '%$searchIn%' OR `doc`.`doc_phone` LIKE '%$searchIn%'"
-                            . " OR `doc`.`city_pincode` LIKE '%$searchIn%'"
-                            . " OR `doc`.`doc_email` LIKE '%$searchIn%' "
-                            . "OR `c`.`city_name` LIKE '%$searchIn%' )";
-            
-            $this->db->where($where_like);
-
-         
-        }
-        
-	
-        if(!is_admin()){
-            
-             $this->db->where_in('doc.sp_code',$spcode); // changes from where to or beacuase other city doctor added by user is not shown
-       
-        
-            $where_b ='( '; 
-//         $this->db->or_where('pharma.crm_user_id', logged_user_data());
-          $where_b .=" doc.crm_user_id = ".logged_user_data() ;
-         if(!empty($boss_are)){
-             $where_b .=" AND ( ";
-             $k=0;    
-            foreach($boss_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                
-                 if($k > 0 && count($boss_id)!=$k){
-                   $where_b .= " OR ";
-               }
-                
-                
-                $where_b  .= " doc.crm_user_id  != $value ";
-               
-               
-                
-                $k++;
-            }
-            
-            $where_b .=' ) ';
-           }
-         $where_b .=' ) ';
-		
-          
-        
-        
-        
-          if(!empty($doc_are)){
-             $where='( '; 
-                $k=0;    
-            foreach($doc_id as $value){
-//          $this->db->or_where('pharma.city_id',$value);
-                $where  .= " doc.doctor_id = '$value'";
-                 $k++;
-                
-               if($k > 0 && count($doc_id)!=$k){
-                   $where .= " OR ";
-               }
-               
-            }
-             $where .=' )';
-             $this->db->or_where($where);
-        }
-
-        
-    }
-    $this->db->order_by($filter['order'], $filter['dir']);
-                            
-        
-        $query = $this->db->get();
-//echo $this->db->last_query(); die;
-         if($this->db->affected_rows()){
-            
-            return count($query->result_array());
-        }
-        else{
-            
-            return FALSE;
-        }
-        
     }
     
     public function edit_doctor($cm_id){
 
-        $arr = "doc.sp_code,doc.doctor_status_id as doc_status_id,"
-                . "doc.city_pincode as city_pincode,doc.doc_navigate_id as doc_navigon,"
-                . "doc.doctor_id,doc.id as id,doc.d_id as dealers_id,doc.doc_name as d_name,"
-                . "doc.doc_email as d_email,doc.doc_phone as d_ph,doc.d_id as d_id,"
-                . "doc.doc_address as address,doc.doc_gender as gender,"
-                . "doc.doc_married_status as married_status,doc.doc_spouse_name as spouse_name,"
-                . "doc.doc_spouse_email as spouse_email,doc.doc_dob as dob,doc.doc_about as about,"
-                . "doc.state_id,doc.city_id,c.city_name,st.state_name";
+        $arr = "doc.sp_code,doc.doctor_status_id as doc_status_id,doc.city_pincode as city_pincode,doc.doc_navigate_id as doc_navigon,doc.doctor_id,doc.id as id,doc.d_id as dealers_id,doc.doc_name as d_name,doc.doc_email as d_email,doc.doc_phone as d_ph,doc.d_id as d_id,doc.doc_address as address,doc.doc_gender as gender,doc.doc_married_status as married_status,doc.doc_spouse_name as spouse_name,doc.doc_spouse_email as spouse_email,doc.doc_dob as dob,doc.doc_about as about,doc.state_id,doc.city_id,c.city_name,st.state_name";
         $this->db->select($arr);
         $this->db->from("doctor_list doc");
 //        $this->db->join("srm_school_master sm" , "cl.s_id=sm.id");
@@ -1118,63 +783,21 @@ GROUP_CONCAT(ubr2.user_id SEPARATOR ',') as childuserid2, GROUP_CONCAT(ubr3.user
 		$row = $query->row_array();
 		return $row['id'];
     }
-
+	
 	public function doc_import_save($data){
-
 		$this->db->select('*');
 		$this->db->from('doctor_list');
 		$this->db->where('doc_phone',$data['doc_phone']);
 		$query = $this->db->get();
 		if ($query->num_rows() == 0) {
-//			pr($data); die;
-			$this->db->insert('doctor_list', $data);
+		    $this->db->insert('doctor_list', $data);
 			return TRUE;
 		}
-		if($query->num_rows() == 1){
-			$get_data=$query->row();
-		if(!empty($data['doc_name'])){$doc_name=$data['doc_name'];}else{ $doc_name=$get_data->doc_name; }
-		if(!empty($data['doc_email'])){$doc_email=$data['doc_email'];}else{ $doc_email=$get_data->doc_email; }
-		if(!empty($data['doc_address'])){$doc_adr=$data['doc_address'];}else{ $doc_adr=$get_data->doc_address; }
-		if(!empty($data['city_id'])){$doc_ctyid=$data['city_id'];}else{ $doc_ctyid=$get_data->city_id; }
-		if(!empty($data['state_id'])){$doc_stid=$data['state_id'];}else{ $doc_stid=$get_data->state_id; }
-		if(!empty($data['doc_gender'])){$doc_gend=$data['doc_gender'];}else{ $doc_gend=$get_data->doc_gender; }
-		if(!empty($data['sp_code'])){$doc_spcode=$data['sp_code'];}else{ $doc_spcode=$get_data->sp_code; }
-		if(!empty($data['city_pincode'])){$doc_pin=$data['city_pincode'];}else{ $doc_pin=$get_data->city_pincode; }
-		if(!empty($data['crm_user_id'])){$doc_crm=$data['crm_user_id'];}else{ $doc_crm=$get_data->crm_user_id; }
-
-
-			$dataArr=array(
-				'doc_name' => $doc_name,
-				'doc_email' => $doc_email,
-				'doc_address' => $doc_adr,
-				'city_id' => $doc_ctyid,
-				'state_id' => $doc_stid,
-				'doc_gender' => $doc_gend,
-				'city_pincode' => $doc_pin,
-				'sp_code' => $doc_spcode,
-				'crm_user_id' => $doc_crm,
-				);
-
-//			$dataArr=array(
-//				'doc_name' => $data['doc_name'],
-//				'doc_email' => $data['doc_email'],
-//				'doc_address' => $data['doc_address'],
-//				'city_id' => $data['city_id'],
-//				'state_id' => $data['state_id'],
-//				'doc_gender' => $data['doc_gender'],
-//				'city_pincode' => $data['city_pincode'],
-//				'sp_code' => $data['sp_code'],
-//				'crm_user_id' => $data['crm_user_id'],
-//				'doc_status' => $data['doc_status']
-//			);
-			$this->db->where('doc_phone',$data['doc_phone']);
-			$this->db->update('doctor_list',$dataArr);
-//			echo $this->db->last_query(); die;
-			return TRUE;
-		}else{
+		else
+		{
 			return False;
 		}
-	}
+    }
     
 	public function get_doctor_data($id=''){
 		$this->db->select('doc_phone,doc_email,doc_name');
@@ -1194,8 +817,7 @@ GROUP_CONCAT(ubr2.user_id SEPARATOR ',') as childuserid2, GROUP_CONCAT(ubr3.user
 		$this->db->select('*');
 		$this->db->from('log_interaction_data');
 		$this->db->where('person_id',$id);
-		$this->db->where('crm_user_id',logged_user_data());		
-        $this->db->order_by('id','desc');
+		$this->db->where('crm_user_id',logged_user_data());		$this->db->order_by('id','desc');
 		$query = $this->db->get();
 		if ($query->num_rows() > 0) {
 			return  $query->row();
@@ -1207,7 +829,7 @@ GROUP_CONCAT(ubr2.user_id SEPARATOR ',') as childuserid2, GROUP_CONCAT(ubr3.user
     }
 	
 	public function get_orderamount($id){
-      	$arr = "order_amount,provider,mail_provider";
+      	$arr = "order_amount";
         $this->db->select($arr);
         $this->db->from("interaction_order");
         $this->db->where("interaction_id",0);
@@ -1215,43 +837,10 @@ GROUP_CONCAT(ubr2.user_id SEPARATOR ',') as childuserid2, GROUP_CONCAT(ubr3.user
         $this->db->where("interaction_person_id",$id);
         $query = $this->db->get();
         if($this->db->affected_rows()){
-			return $result=$query->row();
+			return $result=$query->row()->order_amount;
 		}
         else{
             return FALSE;
         }
     }
-
-
-    public function total_doctor_data($sp_code){
-        $spcode = explode(',',$sp_code);
-        $var1=array();
-        foreach ($spcode as  $val){
-            $arr = "*";
-            $this->db->select($arr);
-            $this->db->from("doctor_list");
-            $this->db->where("sp_code" , $val);
-            $query = $this->db->get();
-            if($this->db->affected_rows()){
-                $var1[$val]=count($query->result_array());
-            }
-        }
-        return array_sum($var1);
-
-    }
-
-
-	public function total_doctors(){
-		$var1=array();
-		$arr = "*";
-		$this->db->select($arr);
-		$this->db->from("doctor_list");
-		$query = $this->db->get();
-		if($this->db->affected_rows()){
-			$var1[]=count($query->result_array());
-		}
-		return array_sum($var1);
-	}
-
-
 }

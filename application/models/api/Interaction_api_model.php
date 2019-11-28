@@ -999,6 +999,36 @@ class Interaction_api_model extends CI_Model {
 	}
 
 
+	public function get_log__doctor_data($data){
+		$this->db->select('*');
+		$this->db->from('log_interaction_data');
+		$this->db->where('person_id',$data['doc_id']);
+		$this->db->where('crm_user_id',$data['user_id']);
+		$this->db->order_by('id','desc');
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
+			return  $query->row();
+		}else{
+			return False;
+		}
+	}
+
+	public function get_orderamount($data){
+    	$arr = "order_amount,provider,mail_provider";
+		$this->db->select($arr);
+		$this->db->from("interaction_order");
+		$this->db->where("interaction_id",0);
+		$this->db->where("crm_user_id",$data['user_id']);
+		$this->db->where("interaction_person_id",$data['doc_id']);
+		$query = $this->db->get();
+		if($this->db->affected_rows()){
+			return $result=$query->row();
+		}
+		else{
+			return FALSE;
+		}
+	}
+
 
 
 }

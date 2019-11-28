@@ -1441,23 +1441,21 @@ function get_assign_task($date){
 	}
 }
 
-function get_tour_info(){
-	$nextmonth = date('Y-m', strtotime('+1 month'));
-	// pr($nextmonth); die;
+function get_tour_info($user_id,$year_month){
+	$nextmonth = date($year_month, strtotime('+1 month'));
 	$ci = &get_instance();
-	$col='id';
+	$col='id, destination, dot, remark, assign_by, is_approved';
 	$ci->db->select($col);
 	$ci->db->from('user_stp');
-	$ci->db->where('crm_user_id',logged_user_data());
+	$ci->db->where('crm_user_id',$user_id);
 	$ci->db->like('dot',$nextmonth);
-	//$ci->db->where('MONTH(dot)',$nextmonth);
 	$query= $ci->db->get();
-	//echo $ci->db->last_query(); die;
+//echo $ci->db->last_query(); die;
 	if($ci->db->affected_rows()){
-		return FALSE;
+		return $query->result_array();
 	}
 	else{
-		return TRUE;
+		return FALSE;
 	}
 }
 

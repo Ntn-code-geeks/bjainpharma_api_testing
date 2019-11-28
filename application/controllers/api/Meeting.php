@@ -478,6 +478,7 @@ class Meeting extends REST_Controller {
 			$year_month=$post['year_month'];
 			$userid=$post['user_id'];
 			$data['Monthly_TP']  = get_tour_info($userid,$year_month);
+//			pr($data['Monthly_TP']); die;
 			if ($data!=FALSE)
 			{
 				$result = array(

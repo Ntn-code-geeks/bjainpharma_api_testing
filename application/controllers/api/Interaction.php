@@ -1612,6 +1612,75 @@ $msg='';
 	 }
 
 
+/* Check Order status  Incomplete or completed in interaction */
+	function checkOrder_post(){
+		# initialize variables
+		$msg = '';
+		$post = array_map('trim', $this->input->post());
+
+		if(!(isset($post['user_id'])&& !empty($post['user_id'])))
+		{
+			$msg='User Id is required.';
+		}
+		if(!(isset($post['doc_id'])&& !empty($post['doc_id'])))
+		{
+			$msg='Doctor Id is required.';
+		}
+		if ($msg == '')
+		{
+			$data['user_id']  = $post['user_id'];
+			$data['doc_id']  = $post['doc_id'];
+			$res = $this->interact->get_log__doctor_data($data);
+			if ($res!=FALSE)
+			{
+				$res2 = $this->interact->get_orderamount($data);
+				if($res2 != FALSE){
+					$dataArr=array(
+						'person_id' => $res->person_id,
+						'interaction_date' => $res->interaction_date,
+						'order_amount' => $res2->order_amount,
+						'provider' => $res2->provider,
+					);
+					$result = array(
+						'Data' => $dataArr,
+						'Status' => true,
+						'Message' => 'Successfully',
+						'Code' => 200
+					);
+				}else{
+					$result = array(
+						'Data' => new stdClass(),
+						'Status' => false,
+						'Message' => 'No Found Previous Data',
+						'Code' => 404
+					);
+				}
+
+			}
+			else
+			{
+				$result = array(
+					'Data' => new stdClass(),
+					'Status' => false,
+					'Message' => 'No Found Previous Data',
+					'Code' => 404
+				);
+			}
+		}
+		else
+		{
+			$result = array(
+				'Data' => new stdClass(),
+				'Status' => false,
+				'Message' => $msg,
+				'Code' => 404
+			);
+		}
+		$this->response($result);
+
+	}
+
+
 
 
 }

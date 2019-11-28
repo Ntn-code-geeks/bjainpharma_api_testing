@@ -102,7 +102,7 @@ class Product_api_model extends CI_Model {
 	}
 
 	public function get_cat_products($cat_id){
-		$arr = "prod.product_id,prod.product_name,prod.product_price,pot.potency_id,pot.potency_value,pck.packsize_id,pck.packsize_value";
+		$arr = "prod.product_category,prod.product_id,prod.product_name,prod.product_price,pot.potency_id,pot.potency_value,pck.packsize_id,pck.packsize_value";
 		$this->db->select($arr);
 		$this->db->from("pharma_product prod");
 		$this->db->join("pharma_potency pot","pot.potency_id=prod.product_potency",'left');
